@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const paymentSchema = new mongoose.Schema({
   user_id: {
@@ -9,7 +9,7 @@ const paymentSchema = new mongoose.Schema({
   paymentMethod: {
     type: String,
     required: true,
-    enum: ["Credit Card", "Debit Card", "PayPal", "Cash"],
+    enum: ["Credit Card", "Debit Card", "UPI", "COD"],
   },
   order_id: {
     type: mongoose.Schema.Types.ObjectId,
@@ -21,4 +21,7 @@ const paymentSchema = new mongoose.Schema({
   paidAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("Payment", paymentSchema);
+const Payment =
+  mongoose.models.payment || mongoose.model("Payment", paymentSchema);
+
+export default Payment;

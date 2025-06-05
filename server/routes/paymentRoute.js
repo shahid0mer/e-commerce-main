@@ -5,11 +5,12 @@ import {
   getPaymentStatus,
   getPaymentHistory,
 } from "../controllers/paymentController.js";
+import authUser from "../middlewares/userAuth.js";
 
 const paymentRouter = express.Router();
 
-paymentRouter.post("/create", createPayment);
-paymentRouter.post("/verify", verifyPayment);
+paymentRouter.post("/create", authUser, createPayment);
+paymentRouter.post("/verify", authUser, verifyPayment);
 paymentRouter.get("/status/:paymentId", getPaymentStatus);
 paymentRouter.get("/history", getPaymentHistory);
 

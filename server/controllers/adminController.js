@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import Order from "../models/Order.js";
 
 //Adminlogin :  /api/admin/login
 
@@ -35,7 +36,7 @@ export const isAdminAuth = async (req, res) => {
   try {
     return res.json({
       success: true,
-      message: "Admin LoggedIn",
+      message: "Admin Authorised",
     });
   } catch (error) {
     console.log(error.message);
@@ -54,6 +55,26 @@ export const adminLogout = async (req, res) => {
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
     return res.json({ success: true, message: "Admin Logged Out" });
+  } catch (error) {
+    console.log(error.message);
+    return res.json({ success: false, message: error.message });
+  }
+};
+
+// viewall orders : /api/admin/viewall
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({
+      $or: [{ paymentType: "COD" }, { isPaid: true }],
+    })
+      .populate("products")
+      .populate("shippingAddress")
+      .sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      orders,
+    });
   } catch (error) {
     console.log(error.message);
     return res.json({ success: false, message: error.message });

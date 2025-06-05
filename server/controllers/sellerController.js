@@ -3,6 +3,7 @@
 import jwt from "jsonwebtoken";
 import Seller from "../models/Seller.js";
 import bcrypt from "bcryptjs";
+import Order from "../models/Order.js";
 
 export const registerSeller = async (req, res) => {
   try {
@@ -114,6 +115,7 @@ export const isSellerAuth = async (req, res) => {
   }
 };
 
+// seller Logout : /api/seller/logout
 export const sellerLogout = async (req, res) => {
   try {
     res.clearCookie("sellerToken", {
@@ -127,6 +129,8 @@ export const sellerLogout = async (req, res) => {
     return res.json({ success: false, message: error.message });
   }
 };
+
+// Seller Profile : /api/seller/profile
 
 export const viewProfile = async (req, res) => {
   try {
@@ -146,6 +150,7 @@ export const viewProfile = async (req, res) => {
   }
 };
 
+// Seller Profile Update : /api/seller/updateprofile
 export const updateProfile = async (req, res) => {
   try {
     const { sellerId, name, email } = req.body;
@@ -168,6 +173,29 @@ export const updateProfile = async (req, res) => {
   } catch (error) {
     console.log(error.message);
 
+    return res.json({ success: false, message: error.message });
+  }
+};
+
+//viewall orders : /api/seller/viewall
+export const getSellerOrders = async (req, res) => {
+  try {
+    const { seller_id } = req.params;
+
+    const orders = await Order.find({
+      $or: [{ paymentType: "COD" }, { isPaid: true }],
+      "products.seller_id": seller_id,
+    })
+      .populate("products")
+      .populate("shippingAddress")
+      .sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      orders,
+    });
+  } catch (error) {
+    console.log(error.message);
     return res.json({ success: false, message: error.message });
   }
 };

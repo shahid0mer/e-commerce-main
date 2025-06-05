@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const reviewSchema = new mongoose.Schema({
   user_id: {
@@ -18,4 +18,6 @@ const reviewSchema = new mongoose.Schema({
 
 reviewSchema.index({ product_id: 1 });
 
-module.exports = mongoose.model("Review", reviewSchema);
+const Review = mongoose.models.review || mongoose.model("Review", reviewSchema);
+
+export default Review;

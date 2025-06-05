@@ -7,10 +7,15 @@ const userSchema = new mongoose.Schema(
     phone: { type: Number },
     address: { type: String },
     password: { type: String, required: true, minLength: 6 },
+    role: {
+      type: String,
+      enum: ["user", "seller", "admin"],
+      default: "user",
+    },
   },
   { timestamps: true }
 );
 
-const User = mongoose.models.user || mongoose.model("user", userSchema);
+const User = mongoose.models.user || mongoose.model("User", userSchema);
 
 export default User;
